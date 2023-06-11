@@ -11,7 +11,7 @@ function dateDifferenceInDays(d1, d2) {
 function setTimeUntilDeadline() {
     const node = document.getElementById("days-left")
     const difference = dateDifferenceInDays(currentDate, deadline)
-    node.textContent = difference > 0 ? `encore ${difference} jour${difference == 1 ? '' : 's'}` : "aller, dépéchez-vous!"
+    node.textContent = difference > 0 ? `encore ${difference} jour${difference == 1 ? '' : 's'}` : "aller, dépéchez-vous !"
 }
 
 document.addEventListener("DOMContentLoaded", () => {
