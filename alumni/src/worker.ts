@@ -103,10 +103,22 @@ async function checkIn(request: Request, env: Env) {
   }
 }
 
+async function deleteCheckIn(request: Request, env: Env) {
+  const checkIn = parseCheckIn(await request.json());
+  if (!checkIn) return new Response("Invalid check in data", { status: 422 });
+  await env.DB.prepare(`delete from check_ins where ticket_id = ?;`).bind(
+    checkIn.ticketId,
+  ).run();
+  const response = new Response();
+  response.headers.append("Access-Control-Allow-Origin", "*");
+  return response;
+}
+
 const routes = new Map();
 routes.set("/tickets@POST", insertTicket);
 routes.set("/tickets@GET", listTickets);
 routes.set("/check_in@POST", checkIn);
+routes.set("/check_in@DELETE", deleteCheckIn);
 
 export default {
   async fetch(
