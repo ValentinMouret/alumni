@@ -15,9 +15,12 @@ time {
     padding: 20px;
 }
 
-.highlighted {
+li {
     margin: 0 -0.4em;
     padding: 0.1em 0.4em;
+}
+
+.highlighted {
     border-radius: 0.8em 0.3em;
     font-weight: 600;
     background: transparent;
@@ -30,6 +33,21 @@ time {
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
 }
+
+li.clear:hover {
+    border-radius: 0.8em 0.3em;
+    font-weight: 600;
+    background: transparent;
+    background-image: linear-gradient(
+        to right,
+        rgba(255, 225, 0, 0.05),
+        rgba(255, 225, 0, 0.35) 4%,
+        rgba(255, 225, 0, 0.15)
+    );
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
 
 #bottom-padder {
     height: 20em;
