@@ -9,7 +9,9 @@
 
 (def production-url "https://alumni.valentin-mouret.workers.dev")
 (def local-url "http://localhost:8787")
-(def base-url production-url)
+(def base-url
+  ; local-url
+  production-url)
 
 (defn url
   [uri]
@@ -51,18 +53,38 @@
   [id]
   (swap! tickets #(assoc-in % [id :checked_in_at] (new js/Date))))
 
+(defn unset-check-in
+  [id]
+  (swap! tickets #(update-in % [id] dissoc :checked_in_at)))
+
 (defn on-check-in-response
   [id r]
   (when (status-ok? r)
     (set-check-in id)))
 
+(defn on-check-in-delete-response
+  [id r]
+  (when (status-ok? r)
+    (unset-check-in id)))
+
+(defn json-request
+  ([url payload] (json-request url payload "POST"))
+  ([url payload method]
+   (js/fetch url
+             (clj->js {:method method
+                       :body (js/JSON.stringify (clj->js payload))}))))
+
 (defn check-in
   [id]
   (let [payload {:ticket_id id}]
-    (-> (js/fetch (url "/check_in")
-                  (clj->js {:method "POST"
-                            :body (js/JSON.stringify (clj->js payload))}))
+    (-> (json-request (url "/check_in") payload)
         (.then (partial on-check-in-response id)))))
+
+(defn delete-check-in
+  [id]
+  (let [payload {:ticket_id id}]
+    (-> (json-request (url "/check_in") payload "DELETE")
+        (.then (partial on-check-in-delete-response id)))))
 
 (defonce search (r/atom nil))
 
@@ -107,7 +129,7 @@
         [:ul
          (for [{:keys [id first_name last_name checked_in_at]} inside]
            [:li {:key id :class "highlighted"
-                 :on-click (fn [] (swap! tickets #(update-in % [id] dissoc :checked_in_at)))}
+                 :on-click #(delete-check-in id)}
             (str first_name " " last_name)
             [:span.faded (str " (" (time-ago checked_in_at) ")")]])]])]))
 
