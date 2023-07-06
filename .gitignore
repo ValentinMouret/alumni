@@ -1,3 +1,4 @@
 alumni/node_modules
 alumni/.wrangler
-/public/js/
+/public/js/*
+!/public/js/main.js
